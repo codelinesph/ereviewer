@@ -1,0 +1,217 @@
+{% extends "student/base.html" %}
+{% load static %}
+{% block title %}TakenExams - {{info.name}}{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item">
+    <a href="{% url 'user:landing' %}">Home</a>
+  </li>
+  <li class="breadcrumb-item">
+    <a href="{% url 'acad:course' info.course.id %}">{{info.course.name}}</a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">{{info.name}}</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-3">
+      {% include "student/sidenavs/navigation.html" %}
+      <div class="card rounded-0 mt-2 shadow">
+        <div class="card-header bg-white">Available Exams</div>
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            {% for topic in info.topics_set.all %}
+            {% for exam in topic.exam_set.all %}
+            <a class="list-group-item" href="/acad/exam/{{exam.id}}">{{exam.name}}</a>
+            {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-9">
+
+      {% if course_info.premium_member == False %}
+        <div class="alert alert-info rounded-0 mt-2">
+          <i class="far fa-lightbulb"></i> Tip: Loving this app?, visit our nearest branch now so we can unlock more content for you.
+        </div>
+      {% endif %}
+
+      {% if info.banner %}
+        <div class="card rounded-0 border-0 shadow">
+          <div class="card-body p-0">
+            <img src="{% static '/img/content/' %}{{info.banner}}" alt="" class="img-responsive w-100">
+          </div>
+        </div>
+      {% endif %}
+      
+      <div class="card rounded-0 mt-3 shadow">
+        <div class="card-header bg-white display-4 font-weight-bold">{{info.name}}</div>
+        <div class="card-body">
+          {{info.description | safe}}
+        </div>
+      </div>
+
+      <!-- MAIN CONTENTS -->
+      
+      <div class="mt-3">
+        <div class="card rounded-0 mt-3 shadow">
+          <div class="card-body lead text-center">Topics For This Subject</div>
+        </div>
+
+        {% if user.is_staff %}
+        <div class="card rounded-0 mt-2 shadow">
+          <div class="card-body p-1">
+            <a href="{% url 'admin:content_subject_change' info.id %}" class="btn btn-success rounded-0" target="_blank">
+              Edit this Subject
+            </a>
+            <a href="{% url 'admin:content_topics_add' %}?subject={{info.id}}" class="btn btn-primary rounded-0" target="_blank">
+              <i class="fas fa-plus"></i> Add New Subject Topic
+            </a>
+          </div>
+        </div>
+        {% endif %}
+
+        {% for topic in info.topics_set.all %}
+        <div class="card rounded-0 mt-2 topic shadow">
+          <div class="card-header bg-white d-flex justify-content-between">
+            <span>
+              <strong class="heading-strong">{{topic.name}}</strong>
+            </span>
+            <span>
+              {% if topic.premium_content %}
+              {% if course_info.premium_member == False %}
+              <span class="badge badge-success">PREMIUM CONTENT</span>
+              {% endif %}
+              {% endif %}
+            </span>
+          </div>
+          <div class="card-body">
+
+            <div class="mb-4">
+              {{topic.description | safe}}
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <ul class="list-group shadow">
+                  {% if topic.lesson_set %}
+                    {% for lesson in topic.lesson_set.all %}
+                      <li class="list-group-item rounded-0 d-flex justify-content-between">
+                        <a href="{% url 'acad:lesson' lesson.id %}">{{lesson.name}}</a>
+                        {% if user.is_staff %}
+                        <a title="Edit this Lesson" target="_blank" href="{% url 'admin:content_lesson_change' lesson.id %}" class="btn btn-outline-secondary btn-sm rounded-0">
+                          <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                  {% endif %}
+                  {% if user.is_staff %}
+                    <a href="{% url 'admin:content_lesson_add' %}?topic={{topic.id}}" class="list-group-item rounded-0" target="_blank">
+                      <i class="fas fa-plus"></i> Add New Lesson
+                    </a>
+                  {% endif %}
+                </ul>
+              </div>
+              <div class="col">
+                <ul class="list-group shadow">
+                  {% if topic.exam_set %}
+                    {% for exam in topic.exam_set.all %}
+                      <li class="list-group-item rounded-0 d-flex justify-content-between">
+                        <a href="{% url 'acad:exam' exam.id %}">
+                          {{exam.name}}
+                        </a>
+                        {% if user.is_staff %}
+                        <div>
+                          <a title="Edit this Exam" target="_blank" href="{% url 'admin:content_exam_change' exam.id %}" class="btn btn-outline-secondary btn-sm rounded-0">
+                            <i class="fas fa-pencil-alt"></i>
+                          </a>
+                          <a title="Show Results For this Exam" target="_blank" href="{% url 'admin:taken_attemptexam_changelist'%}?original_exam__id__exact={{exam.id}}" class="btn btn-outline-secondary btn-sm rounded-0">
+                            <i class="fas fa-poll"></i>
+                          </a>
+                        </div>
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                  {% endif %} 
+                  {% if user.is_staff %}
+                    <a href="{% url 'admin:content_exam_add' %}?topic={{topic.id}}" class="list-group-item rounded-0" target="_blank">
+                      <i class="fas fa-plus"></i> Add New Exam
+                    </a>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+            
+          </div>
+          <div class="card-footer bg-white p-1">
+            <div class="btn-group">
+              {% if user.is_staff %}
+                <a href="{% url 'admin:content_topics_change' topic.id %}" class="btn btn-success rounded-0" target="_blank">
+                  Edit This Topic
+                </a>
+                <a href="{% url 'admin_reports:index' %}?id={{topic.id}}" class="btn btn-secondary rounded-0" target="_blank">
+                  <i class="fas fa-users"></i> Student Grades Report
+                </a>
+              {% endif %}
+
+              {% if topic.premium_content %}
+              {% if course_info.premium_member == True %}
+              <a href="/acad/topic/{{topic.id}}" class="btn btn-primary rounded-0">View Content <i class="fas fa-chevron-right"></i></a>
+              {% else %}
+              <button class="btn btn-primary rounded-0" type="button" data-toggle="modal" data-target="#contet-is-premium">View Content</button>
+              {% endif %}
+
+              {% else %}
+              <a href="/acad/topic/{{topic.id}}" class="btn btn-primary rounded-0">View Content <i class="fas fa-chevron-right"></i></a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="contet-is-premium" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header rounded-0">
+        <h5 class="modal-title" id="contet-is-premium-label">Premium Content</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="lead">Visit our nearest branch now so we can unlock more content for you.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+{% endblock %}
+
+
+{% block bottom_pre_dependency %}
+<script>var subscriptions = {};</script>
+{% endblock %}
+
+{% block bottom_post_dependency %}
+<script>var subscriptions = [];</script>
+<script>
+  topics = document.getElementsByClassName('topic')
+  for (var i = topics.length - 1; i >= 0; i--){
+    var heading = topics[i].getElementsByClassName("heading-strong")[0]
+    heading.innerHTML = '#'+(i+1)+' - '+heading.innerHTML
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  {# <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous"> #}
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+  
+  <title>CHQ E-Reviewer</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static "css/codelime-bs4.min.css" %}">
+  <link rel="stylesheet" href="{% static "css/style.css" %}">
+</head>
+<body>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124181981-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-124181981-3');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-7333931612801970",
+          enable_page_level_ads: true
+     });
+</script>
+
+
+  <section id="login" class="bg-primary h-100">
+    <div class="d-flex justify-content-center flex-row">
+      <div class="col-lg-4 col-xl-3 col-md-5 col-sm-7 col-xs-11 card rounded-0">
+        <div class="card-body">
+          <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+
+            {% for message in messages %}
+            <div class="alert alert-danger rounded-0" role="alert">{{ message }}</div>
+            {% endfor %}
+
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" required class="form-control rounded-0" name="username">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>Password</label>
+                  <input type="password" required class="form-control rounded-0" name="password">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary rounded-0 btn-block">Submit</button>
+            <div class="text-secondary text-center">-or-</div>
+            <a type="submit" class="btn btn-secondary rounded-0 btn-block text-light" href="#signup">Sign Up Now!</a>
+            
+            <a href="{% url 'password_reset' %}" class="text-center mt-3">Forgot Password</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="signup" class="p-5">
+    <form action="{% url "main_home" %}" method="post">
+      {% csrf_token %}
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <h2 class="section-heading">SIGN UP NOW!</h2>
+            <hr class="my-4">
+          </div>
+        </div>
+        <div class="row">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>{{signupform.last_name.label_tag}}</label>
+                  {{signupform.last_name}}
+                  {% if signupform.last_name.errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.last_name.errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% if signupform.last_name.non_field_errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.last_name.non_field_errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>{{signupform.first_name.label_tag}}</label>
+                  {{signupform.first_name}}
+                  {% if signupform.first_name.errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.first_name.errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% if signupform.first_name.non_field_errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.first_name.non_field_errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>{{signupform.email.label_tag}}</label>
+                  {{signupform.email}}
+                  {% if signupform.email.errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.email.errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% if signupform.email.non_field_errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.email.non_field_errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>{{signupform.address.label_tag}}</label>
+                  {{signupform.address}}
+                  {% if signupform.address.errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.address.errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% if signupform.address.non_field_errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.address.non_field_errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>{{signupform.curriculum.label_tag}}</label>
+                  {{signupform.curriculum}}
+                  {% if signupform.curriculum.errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.curriculum.errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% if signupform.curriculum.non_field_errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.curriculum.non_field_errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>{{signupform.username.label_tag}}</label>
+                  {{signupform.username}}
+                  {% if signupform.username.errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.username.errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% if signupform.username.non_field_errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.username.non_field_errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>{{signupform.password1.label_tag}}</label>
+                  {{signupform.password1}}
+                  <div class="alert alert-info rounded-0">{{signupform.password1.help_text}}</div>
+                  {% if signupform.password1.errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.password1.errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% if signupform.password1.non_field_errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.password1.non_field_errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>{{signupform.password2.label_tag}}</label>
+                  {{signupform.password2}} 
+                  <div class="alert alert-info rounded-0">{{signupform.password2.help_text}}</div>  
+                  {% if signupform.password2.errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.password2.errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% if signupform.password2.non_field_errors %}
+                  <div class="alert alert-danger rounded-0">
+                    {% for error in signupform.password2.non_field_errors %}
+                      {{ error|escape }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-sm-6 pt-3 d-none d-sm-block">
+                <button type="submit" class="btn btn-primary btn-xl">Sign Up</button>
+              </div>
+              <div class="col-sm-6">
+                <div class="g-recaptcha" data-sitekey="6LemiWkUAAAAACy_3HuNy_QE4KOolwhTWi5Jb-wD" id="signuprecaptcha"></div>
+              </div>
+              <div class="col-sm-6 pt-3 d-block d-sm-none">
+                <button type="submit" class="btn btn-primary btn-block btn-xl rounded-0">Sign Up</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section class="bg-dark text-white p-2 container-fluid text-center">
+    Codelines Team &copy; 2019
+  </section>
+
+</body>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+</html>
+

@@ -1,0 +1,10 @@
+Django
+django-filter
+django-nested-admin
+djangorestframework
+django-htmlmin
+mysqlclient
+gunicorn
+psycopg2
+django-webdav-storage
+pillow

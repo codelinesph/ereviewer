@@ -1,0 +1,161 @@
+{% extends "student/base.html" %}
+
+{% load static %}
+{% block title %}TakenExams - {{info.name}}{% endblock %}
+
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item">
+    <a href="{% url 'user:landing' %}">Home</a>
+  </li>
+  <li class="breadcrumb-item" aria-current="page">
+    <a href="{% url 'acad:course' info.subject.course.id %}">{{info.subject.course.name}}</a>
+  </li>
+  <li class="breadcrumb-item" aria-current="page">
+    <a href="{% url 'acad:subject' info.subject.id %}">{{info.subject.name}}</a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">{{info.name}}</li>
+{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-3">
+        {% include "student/sidenavs/navigation.html" %}
+        <div class="card rounded-0 mt-3 shadow">
+          <div class="card-header bg-white">Topic Exams</div>
+          <div class="card-body p-0">
+            <ul class="list-group list-group-flush">
+              {% for exam in info.exam_set.all %}
+                {% if course_info.premium_member == False and content.premium_content %}
+                  <a class="list-group-item" href="#contet-is-premium" data-toggle="modal">{{exam.name}}</a>
+                {% else %}
+                  <a class="list-group-item" href="{% url 'acad:exam' exam.id %}">{{exam.name}}</a>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-9">
+
+        {% if course_info.premium_member == False and info.premium_content == False %}
+          <div class="alert alert-info rounded-0 mt-2 shadow">
+            <i class="far fa-lightbulb"></i> Tip: Loving this app?, visit our nearest branch now so we can unlock more content for you.
+          </div>
+        {% endif %}
+
+        <div class="card rounded-0 mb-2 shadow">
+          <div class="card-body text-center display-4 font-weight-bold">{{info.name}}</div>
+        </div>
+
+        {% if user.is_staff %}
+          <div class="card rounded-0 shadow mb-3">
+            <div class="card-body p-1">
+              <div class="btn-group">
+                <a href="{% url 'admin:content_topics_change' info.id %}" class="btn btn-outline-success rounded-0" target="_blank">
+                  Edit Content
+                </a>
+                <a href="{% url 'admin_reports:index' %}?id={{info.id}}" class="btn btn-outline-secondary rounded-0" target="_blank">
+                  <i class="fas fa-users"></i> Student Grades Report
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="card rounded-0 mb-2 pb-3 shadow">
+          <div class="card-body">
+            {{info.description | safe}}
+            <hr>
+            {% if course_info.premium_member == False and info.premium_content %}
+              <div class="alert alert-danger rounded-0">
+              <p class="text-justify lead">This content is only available for our premium users, please visit our nearest branch so we can activate more content for you. Thank you!</p>
+              </div>
+            {% else %}
+              <p class="text-justify">{{info.content | safe}}</p>
+              <div class="row">
+                <div class="col-md-6">
+                  <ul class="list-group shadow">
+                    {% if info.lesson_set %}
+                      {% for lesson in info.lesson_set.all %}
+                        <a href="{% url 'acad:lesson' lesson.id %}" class="list-group-item rounded-0"><i class="far fa-file-alt"></i> {{lesson.name}}</a>
+                      {% endfor %}
+                    {% endif %}
+                    {% if user.is_staff %}
+                      <a href="{% url 'admin:content_lesson_add' %}?topic={{info.id}}" class="list-group-item rounded-0">
+                        <i class="fas fa-plus"></i> Add New Lesson
+                      </a>
+                    {% endif %}
+                  </ul>
+                </div>
+                <div class="col-md-6">
+                  <ul class="list-group shadow">
+                    {% if info.exam_set %}
+                      {% for exam in info.exam_set.all %}
+                        <a href="{% url 'acad:exam' exam.id %}" class="list-group-item rounded-0"><i class="far fa-calendar-check"></i> {{exam.name}}</a>
+                      {% endfor %}
+                    {% endif %}
+                    {% if user.is_staff %}
+                      <a href="{% url 'admin:content_exam_add' %}?topic={{info.id}}" class="list-group-item rounded-0">
+                        <i class="fas fa-plus"></i> Add New Exam
+                      </a>
+                    {% endif %}
+                  </ul>
+                </div>
+
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card rounded-0 mb-5 shadow">
+          <div class="card-body p-1 bg-white d-flex justify-content-between">
+            <div>
+              {% if previous %}
+              <a href="{% url 'acad:topic' previous.pk %}" class="btn btn-lg btn-primary shadow rounded-0">
+                <i class="fas fa-chevron-left"></i>&nbsp;&nbsp;
+                Previous Topic: {{previous.name}}
+              </a>
+              {% endif %}
+            </div>
+            <div>
+              {% if next %}
+              <a href="{% url 'acad:topic' next.pk %}" class="btn btn-lg btn-outline-primary shadow rounded-0">
+                Next Topic: {{next.name}}&nbsp;&nbsp;
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal fade" id="contet-is-premium" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-0">
+        <div class="modal-header rounded-0">
+          <h5 class="modal-title" id="contet-is-premium-label">Premium Content</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="lead">Visit our nearest branch now so we can unlock more content for you.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block bottom_pre_dependency %}
+<script>var subscriptions = {};</script>
+{% endblock %}

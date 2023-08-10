@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "codelines-admin/heading-dependencies.html" %}
+    <title>{% block title %}{% endblock %}</title>
+    {% block top_dependencies %}{% endblock %}
+</head>
+<body>
+    <div>
+        {% include "codelines-admin/nav-top.html" %}
+        <nav class="d-print-none">
+            <ol class="breadcrumb p-1">
+                <li class="breadcrumb-item" aria-current="page"><a href="{% url 'admin:index' %}">Dashboard</a></li>
+                {% block breadcrumbs %}{% endblock %}
+            </ol>
+        </nav>
+    </div>
+    <div class="mb-5 pb-2">
+        {% block content %}{% endblock %}
+    </div>
+    {% include "codelines-admin/footer.html" %}
+</body>
+  {% block bottom_pre_dependency %}{% endblock %}
+  {% include "codelines-admin/bottom-dependencies.html" %}
+  {% block bottom_post_dependency %}{% endblock %}
+</html>

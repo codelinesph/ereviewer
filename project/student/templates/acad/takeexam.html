@@ -1,0 +1,194 @@
+{% extends "student/base.html" %}
+{% load static %}
+{% block title %}TakenExams - {{subject_info.course}}{% endblock %}
+{% block top_dependencies %}
+  <link rel="stylesheet" href="{%static "css/takeexam.css"%}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+{% endblock %}
+
+{% block breadcrumb %}
+  
+  <li class="breadcrumb-item" aria-current="page">
+    <a href="/u/">Home</a>
+  </li>
+
+  {% if mode == "exam" %}
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="/acad/course/{{info.topic.subject.course.id}}">{{info.topic.subject.course.name}}</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="/acad/subject/{{info.topic.subject.id}}">{{info.topic.subject.name}}</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="/acad/topic/{{info.topic.id}}">{{info.topic.name}}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{info.name}}
+    </li>
+  {% elif mode == "course" %}
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="{% url 'acad:course' info.pk %}">{{info.name}}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      General Assessment
+    </li>
+  {% elif mode == "subject" %}
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="{% url 'acad:course' info.course.pk %}">{{info.course.name}}</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="{% url 'acad:subject' info.pk %}">{{info.name}}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      General Assessment
+    </li>
+  {% endif %}
+{% endblock %}
+
+
+
+{% block content %}
+<div id="root" class="container pb-5">
+  <!--<div class="row">
+    <div class="col-lg-2">
+      <div class="card rounded-0 shadow" id="listview-pagination">
+        <div class="card-body p-1">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center flex-wrap pagination-sm">
+              <li class="page-item"><a class="page-link rounded-0" href="#">1</a></li>
+              <li class="page-item"><a class="page-link rounded-0" href="#">2</a></li>
+              <li class="page-item"><a class="page-link rounded-0" href="#">3</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-10"> -->
+      {% if course_info.premium_member == False and info.premium_content %}
+        <div class="alert alert-danger rounded-0 lead">Sorry. This content is only available for our premium subscribers, please visit one of our branches so we can activate this content, and more!, for you</div>
+      {% else %}
+        <div class="card shadow rounded-0 mt-3" id="exam-description">
+          <div class="card-body text-center lead">
+            <p>
+              {{info.name}}
+              {% if info.question_set %}
+              - {{info.question_set.count}} 
+              {% else %}
+              General Assessment - {{info.assessment_limit}} 
+              {% endif %}
+              Items</p>
+            <button class="btn btn-outline-primary rounded-0 btn-block" id="start-exam">Start Exam</button> 
+          </div>
+        </div>
+        <div class="card shadow rounded-0 mt-2 d-none" id="exam-summary-container">
+          <div class="card-header bg-white">Summary</div>
+          <div class="card-body">
+            <div class="text-center display-4" id="exam-summary-score"></div>
+            <div class="lead text-center" id="exam-summary-percentage"></div>
+          </div>
+        </div>
+
+        <!-- ALERTS -->
+        <div id="exam-submit-incomplete" class="card shadow alert alert-warning rounded-0 alert-dismissible fade show d-none mt-2" role="alert">
+          <strong><i class="fas fa-exclamation-triangle"></i> Warning:</strong> There are still unanswered questions, are you sure you want to submit?
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="exam-submit-success" class="card shadow alert alert-success rounded-0 alert-dismissible fade show d-none mt-2" role="alert">
+          <strong><i class="fas fa-check"></i> Success!</strong> Exam Successfully Submitted!
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="exam-submit-info" class="card shadow alert alert-info rounded-0 alert-dismissible fade show d-none mt-2" role="alert">
+          <strong><i class="far fa-lightbulb"></i> Tip:</strong> You Can Click on pointed correct answer to view explanation of the correct answer
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="exam-take-tips" class="card shadow alert alert-info rounded-0 fade show d-none mt-2" role="alert">
+          <strong><i class="far fa-lightbulb"></i> Tip:</strong> Changed your mind about your answer?. click on your current answer to revert current answer and then click on your new answer.
+        </div>
+        <!-- END OF ALERTS -->
+
+        <div class="card shadow rounded-0 mt-3 d-none shadow" id="display-options">
+          <div class="card-body p-1 d-flex justify-content-between">
+            <div class="btn-group">
+              <button data-view="press" id="set-press-view" class="btn btn-outline-dark rounded-0 view-controller"><i class="far fa-clone"></i></button>
+              <button data-view="list" id="set-list-view" disabled class="btn btn-dark rounded-0 view-controller"><i class="fas fa-bars"></i></button>
+              <button data-view="grid" id="set-grid-view" class="btn btn-outline-dark rounded-0 view-controller"><i class="fas fa-th"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div id="questions-holder" class="mt-4 questionaires"></div>
+
+        <div id="questions-review-mode" class="mt-4 mb-2 card questionaires-review d-none rounded-0 shadow border-0">
+          <div class="card-body p-0 table-responsive c-body"></div>
+        </div>
+
+        <div class="card shadow rounded-0 mt-1 d-none" id="footer-controls">
+          <div class="card-body p-1 d-flex justify-content-between">
+            <div>
+              <div class="btn-group d-none" id="point-controller-container">
+                <button disabled class="btn btn-outline-primary rounded-0 point-controller" id="press-view-prev"><i class="fas fa-angle-left"></i>&nbsp;&nbsp;Previous</button>
+                <button disabled class="btn btn-outline-primary rounded-0 point-controller" id="press-view-next">Next&nbsp;&nbsp;<i class="fas fa-angle-right"></i></button>
+              </div>
+            </div>
+            <div class="btn-group">
+              <div id="on-finish-toolbar" class="d-none">
+                <button id="return-to-take" class="btn btn-outline-primary rounded-0 d-none">Return to Take Exam</button>
+                <button id="finalize-submit" class="btn btn-outline-success rounded-0">Submit Exam</button>
+                <!--<button id="return-to-take" class="btn btn-outline-primary rounded-0 d-none" onclick="returnToExam()">Return to Take Exam</button>
+                <button id="finalize-submit" class="btn btn-outline-success rounded-0" onclick="submitExam()">Submit Exam</button>-->
+              </div>
+              <div>
+                <a id="return-home" class="btn btn-outline-primary rounded-0 d-none" href="{% url 'user:landing' %}">Return Home</a>
+                <button id="retake-exam" class="btn btn-outline-success rounded-0 d-none" onclick="location.reload()">Retake Exam</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="backtop" title="Go to top" class="btn btn-dark rounded-0 btn-lg"><i class="fas fa-angle-up"></i></button> 
+
+        <nav class="mt-2 d-none" id="press-view-navigator">
+          <ul class="pagination justify-content-center flex-wrap"></ul>
+        </nav>
+      {% endif %}
+    <!-- </div>
+  </div> -->
+
+  <!-- MODALS -->
+  <!-- Global Spinner Modal -->
+  <div class="modal fade" id="global-request-loader-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <div class="display-3">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block bottom_pre_dependency %}
+<script>var subscriptions = {};</script>
+{% endblock %}
+
+{% block bottom_post_dependency %}
+  {% if course_info.premium_member == False and info.premium_content %}
+  {% else %}
+    <script>var subscriptions = [];</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="{% static "js/takeexamv2.js" %}"></script>
+    </html>
+  {% endif %}
+{% endblock %}
+

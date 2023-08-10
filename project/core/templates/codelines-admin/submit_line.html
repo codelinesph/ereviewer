@@ -1,0 +1,32 @@
+{% load i18n admin_urls %}
+
+
+<div class="card rounded-0 mt-2">
+    <div class="card-body p-1">
+        <div class="btn-group">
+            {% block submit-row %}
+                {% if show_save %}
+                    <input class="btn btn-outline-primary rounded-0" type="submit" name="_save" value="{% trans 'Save' %}">
+                {% endif %}
+                {% if show_delete_link and original %}
+                    {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
+                    <a class="btn btn-outline-danger rounded-0" href="{% add_preserved_filters delete_url %}">{% trans "Delete" %}</a>
+                {% endif %}
+    
+                {% if show_save_as_new %}
+                    <input class="btn btn-outline-primary rounded-0" type="submit" value="{% trans 'Save as new' %}" name="_saveasnew">{% endif %}
+                {% if show_save_and_add_another %}
+                    <input class="btn btn-outline-primary rounded-0" type="submit" value="{% trans 'Save and add another' %}" name="_addanother">
+                {% endif %}
+                {% if show_save_and_continue %}
+                    <input class="btn btn-outline-primary rounded-0" type="submit" value="{% if can_change %}{% trans 'Save and continue editing' %}{% else %}{% trans 'Save and view' %}{% endif %}" name="_continue">
+                {% endif %}
+    
+                {% if show_close %}
+                    <a class="btn btn-outline-primary rounded-0" href="{% url opts|admin_urlname:'changelist' %}" class="closelink">{% trans 'Close' %}</a>
+                {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+
+</div>

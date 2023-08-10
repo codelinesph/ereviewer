@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "student/heading-dependencies.html" %}
+  <title>{% block title %}{% endblock %}</title>
+  {% block top_dependencies %}{% endblock %}
+</head>
+<body>
+  <!-- Load Facebook SDK for JavaScript -->
+  <div id="fb-root"></div>
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        xfbml            : true,
+        version          : 'v3.3'
+      });
+    };
+
+    (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124181981-3"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-124181981-3');
+    </script>
+
+
+  <!-- Your customer chat code -->
+  <div class="fb-customerchat"
+  attribution=setup_tool
+  page_id="291673164712252"
+  theme_color="#67b868">
+  </div>
+
+  <div class="fixed-top">
+    {% include "student/nav-top.html" %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb shadow bg-light" id="base-breadcrumb">{% block breadcrumb %}{% endblock %}</ol>
+    </nav>
+  </div>
+  <div class="mb-5 pb-2" id="base-content">
+    {% block content %}{% endblock %}
+  </div>
+
+</body>
+
+{% include "student/footer.html" %}
+{% block bottom_pre_dependency %}{% endblock %}
+{% include "student/bottom-dependencies.html" %}
+{% block bottom_post_dependency %}{% endblock %}
+</html>

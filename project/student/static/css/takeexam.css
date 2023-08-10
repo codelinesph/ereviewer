@@ -1,0 +1,83 @@
+.q-card-default{
+    border-top:5px solid #969696;
+}
+.q-card-completed{
+    border-top:5px solid #17a2b8;
+}
+.q-card-correct{
+    border-top:5px solid #28a745;
+}
+.q-card-incorrect{
+    border-top:5px solid #FF6347;
+}
+
+.popover-header{
+    background-color: #778899;
+    border-radius: 0 !important;
+    color:white;
+}
+.popover{
+    border: 1px solid #778899;
+    border-radius: 0 !important;
+}
+
+.page-item .page-link{
+    color:rgb(83, 83, 83);
+    border:1px solid rgb(83, 83, 83);
+}
+.page-item.active .page-link{
+    background-color: #28a745 !important;
+    color:white !important;
+}
+
+.bdr-selected{
+    border:1px solid #6A5ACD !important;
+    border-right: 20px solid #6A5ACD !important;
+    background-color:#ebe8fc !important;
+}
+.bdr-im_correct{
+    border:1px solid #28a745 !important;
+    border-right: 20px solid #28a745 !important;
+    background-color:#eafaea !important;
+}
+.bdr-im_wrong{
+    border:1px solid #FF6347 !important;
+    border-right: 20px solid #FF6347 !important;
+    background-color:#ffefed !important;
+}
+.bdr-correct_answer{
+    border:1px solid #778899 !important;
+    border-right: 20px solid #778899 !important;
+    background-color:#f1f3f5 !important;
+}
+
+.list-group-item{
+    text-decoration: none !important
+}
+.list-group-item:hover{
+    background-color: #ebe8fc;
+}
+
+#listview-pagination{
+    position: fixed; /* Fixed/sticky position */
+    top: 200px; /* Place the button at the bottom of the page */
+    left: 10px; /* Place the button 30px from the right */
+    z-index: 99; /* Make sure it does not overlap */
+    cursor: pointer; /* Add a mouse pointer on hover */
+}
+#backtop {
+    position: fixed; /* Fixed/sticky position */
+    bottom: 20px; /* Place the button at the bottom of the page */
+    right: 30px; /* Place the button 30px from the right */
+    z-index: 99; /* Make sure it does not overlap */
+    cursor: pointer; /* Add a mouse pointer on hover */
+  }
+.bg-info-light{
+    background: repeating-linear-gradient(
+        45deg,
+        #5dade2 2px,
+        #5dade2 2px,
+        #ffffff 4px,
+        #ffffff 20px
+    );
+}

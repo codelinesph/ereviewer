@@ -1,0 +1,75 @@
+{% extends "codelines-admin/base.html" %}
+{% load static %}
+{% block title %}
+  Student Assesment Report
+{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+
+    <div class="card rounded-0 d-print-none">
+      <div class="card-body p-1">
+        <div class="btn-group">
+          <button class="btn btn-outline-primary rounded-0" onclick="window.print()">
+            <i class="fas fa-print"></i> 
+            Print Report
+          </button>
+          <button class="btn btn-outline-success rounded-0" onclick="exportToExcel('assesmentReport')">
+              <i class="fas fa-file-excel"></i> 
+            Export to Excel
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive mt-3">
+      <table class="table table-sm table-hover table-bordered" id="assesmentReport">
+            <tr>
+              <td class="lead text-center font-weight-bold" colspan={{topic_info.exam_set.count|add:"2"}}>
+                Student Assesment Report
+              </td>
+            </tr>
+            <tr>
+              <td class="font-weight-bold" colspan=2>SUBJECT</td>
+              <td class="font-weight-bold" colspan={{topic_info.exam_set.count|add:"1"}}>{{topic_info.subject | upper}}</td>
+            </tr>
+            <tr>
+              <td class="font-weight-bold" colspan=2>COURSE</td>
+              <td class="font-weight-bold" colspan={{topic_info.exam_set.count|add:"1"}}>{{topic_info.subject.course | upper}}</td>
+            </tr>
+            <tr>
+              <td class="font-weight-bold" class="lead text-center" colspan={{topic_info.exam_set.count|add:"2"}}>
+              </td>
+            </tr>
+
+            <td class="font-weight-bold">#</td>
+            <td class="font-weight-bold">STUDENT NAME</td>
+              {% for exam in topic_info.exam_set.all %}
+                <td class="font-weight-bold">{{exam.name | upper}}</td>
+              {% endfor %}
+              {% for subscription in suscriptions %}
+                <tr>
+                  <td class="font-weight-bold">{{ forloop.counter }}</td>
+                  <td>
+                    {{subscription.owner.first_name | capfirst}}&nbsp;
+                    {{subscription.owner.last_name | capfirst}}
+                  </td>
+                  {% for exam in topic_info.exam_set.all %}
+                    <td>
+                    {% for attempt in attempts %}
+                      {% if attempt.owner == subscription.owner and attempt.original_exam == exam %}
+                        {{attempt.score_percentage}}%
+                      {% endif %}
+                    {% endfor %}
+                    </td>
+                  {% endfor %}
+                </tr>
+            {% endfor %}
+          
+      </table>
+    </div>
+  </div>
+{% endblock %}
+
+{% block bottom_post_dependency %}
+  <script src="{% static 'js/global.js' %}"></script>
+{% endblock %}

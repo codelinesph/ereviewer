@@ -1,0 +1,77 @@
+{% extends 'student/base.html' %}
+{% load static %}
+{% block title %}Taken Exams{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'user:landing' %}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Exam Results</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-2">
+      {% include "student/sidenavs/navigation.html" %}
+      <div class="card mt-2 rounded-0">
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            <a href="{% url 'user:landing' %}" class="list-group-item text-dark">Dashboard</a>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-10">
+
+      <div class="card rounded-0 shadow">
+        <div class="card-body lead text-center">My Exam Results</div>
+      </div>
+
+      <div class="card rounded-0 shadow mt-4 border-0">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover m-0">
+              <tr>
+                <th>Exam</th>
+                <th># of Items</th>
+                <th>Date Taken</th>
+                <th>My Score</th>
+              </tr>
+              {% for result in results %}
+              <tr>
+                <td>
+                  <a href="{% url 'taken:review' result.id %}">
+                    <small><i class="fas fa-link"></i></small>&nbsp;&nbsp;
+                    {% if result.original_exam.name %}
+                      {{result.original_exam.name}}
+                    {% elif result.course_exam %}
+                      General Assessment for {{result.course_exam.name}}
+                    {% elif result.subject_exam %}
+                      General Assessment for {{result.subject_exam.name}}
+                    {% elif result.topic_exam %}
+                      General Assessment for {{result.topic_exam.name}}
+                    {% endif %}
+                  </a>
+                </td>
+                <td>{{result.attemptquestion_set.count}}</td>
+                <td>{{result.attempted_at}}</td>
+                <td>{{result.my_score}}</td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+      
+
+    </div>
+
+  </div>
+</div>  
+{% endblock %}
+
+{% block bottom_post_dependency %}
+<script src="{%static "js/countdown.js"%}"></script>
+<script>var subscriptions = {{subscription_json|safe}};</script>
+<script src="{%static "js/main.js"%}"></script>
+{% endblock %}

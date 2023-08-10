@@ -1,0 +1,40 @@
+{% extends "codelines-admin/base.html" %}
+{% load i18n %}
+
+{% block title %}TakenExams{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+{% for app in app_list %}
+<li class="breadcrumb-item active" aria-current="page">{{app.name}}</li>
+{% endfor %}
+{% endblock %}
+{% endif %}
+
+
+{% block content %}
+
+
+<div class="container">
+  {% for app in app_list %}
+  <div class="card rounded-0">
+    <div class="card-body lead text-center">{{app.name}}</div>
+  </div>
+
+  <ul class="list-group rounded-0 mt-3">
+    {% for model in app.models %}
+      {% if model.admin_url %}
+      <li class="rounded-0 list-group-item d-flex justify-content-between">
+        <a href="{{model.admin_url}}" class="text-dark">{{model.name}}</a>
+        <a href="{{model.add_url}}" class="text-dark" title="Add New {{model.name}}"><i class="fas fa-plus"></i></a>
+      </li>
+      {% else %}
+      <li class="rounded-0 list-group-item">{{model.name}}</li>
+      {% endif %}
+    {% endfor %}                
+  </ul>
+  {% endfor %}
+</div>
+
+
+{% endblock %}

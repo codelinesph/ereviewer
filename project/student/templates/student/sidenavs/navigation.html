@@ -1,0 +1,78 @@
+<div class="card rounded-0 mt-2 shadow">
+  <div class="card-header bg-secondary text-light rounded-0">Navigation</div>
+  <div class="card-body p-1">
+    <ul id="myUL">
+
+    {% for subscription in subscriptions %}
+      <li>
+      {% if navigation.course == subscription.course_id %}
+        <span class="caret caret-down">{{subscription.course}}</span>
+        <ul class="nested active">
+      {% else %}
+        <span class="caret"><a href="{% url 'acad:course' subscription.course_id %}">{{subscription.course}}</a></span>
+        <ul class="nested">
+      {% endif %}
+
+      {% for subject in subscription.course.subject_set.all %}
+        <li>
+          {% if navigation.subject == subject.id %}
+            <span class="caret caret-down">{{subject.name}}</span>
+            <ul class="nested active">
+          {% else %}
+            <span class="caret">
+              <a href="{% url 'acad:subject' subject.id %}">{{subject.name}}</a>
+            </span>
+            <ul class="nested">
+          {% endif %}
+
+          {% for topic in subject.topics_set.all %}
+            <li>
+            {% if navigation.topic == topic.id %}
+              <span class="caret caret-down">{{topic.name}}</span>
+              <ul class="nested active">
+            {% else %}
+              <span class="caret">
+                <a href="{% url 'acad:topic' topic.id %}">{{topic.name}}</a>
+              </span>
+              <ul class="nested">
+            {% endif %}
+
+            {% for lesson in topic.lesson_set.all %}
+              <li>
+                <i class="far fa-file-alt"></i> 
+                {% if navigation.lesson == lesson.id %}
+                  {{lesson.name}}
+                {% else %}
+                  <a href="{% url 'acad:lesson' lesson.id %}">{{lesson.name}}</a>
+                {% endif %}
+              </li>
+            {% endfor %}
+
+            {% for exam in topic.exam_set.all %}
+              <li>
+                <i class="far fa-calendar-check"></i> 
+                <a href="{% url 'acad:exam' exam.id %}">{{exam.name}}</a>
+              </li>
+            {% endfor %}
+            </ul>
+            </li>
+          {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+
+      </ul>
+      </li>
+    {% endfor %}
+
+    </ul> 
+  </div>
+</div>
+
+<div class="card my-2 rounded-0 shadow">
+  <div class="card-body p-0">
+    <ul class="list-group list-group-flush">
+      <a href="{% url "taken:index" %}" class="list-group-item text-dark">Exam Results</a>
+    </ul>
+  </div>
+</div>

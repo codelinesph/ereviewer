@@ -1,0 +1,29 @@
+{% if app_list %}
+{% for app in app_list %}
+<div class="card rounded-0 mb-1 border-dark">
+  <div class="card-header bg-dark rounded-0 p-2">
+    <a href="{{app.app_url}}" class="text-white">{{app.name}}</a>
+  </div>
+  <div class="card-body p-0">
+    <ul class="list-group list-group-flush">
+      {% for model in app.models %}
+        {% if model.admin_url %}
+        <li class="list-group-item d-flex justify-content-between">
+          <a href="{{model.admin_url}}" class="text-dark">{{model.name}}</a>
+          <a href="{{model.add_url}}" class="text-dark" title="Add New {{model.name}}"><i class="fas fa-plus"></i></a>
+        </li>
+        {% else %}
+        <li class="list-group-item">{{model.name}}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="card rounded-0 mt-1 border-dark">
+  <div class="card-header bg-dark rounded-0 p-2">Notice</div>
+  <div class="card-body p-0">You don't have permission to view or edit anything.</div>
+</div>
+
+{% endif %}

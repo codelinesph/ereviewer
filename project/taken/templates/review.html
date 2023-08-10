@@ -1,0 +1,136 @@
+{% extends 'student/base.html' %}
+{% load static %}
+{% block title %}
+  Review - 
+  {% if exam_data.original_exam %}
+    {{exam_data.original_exam.name}}
+  {% elif exam_data.course_exam %}
+    General Assessment for {{exam_data.course_exam.name}}
+  {% elif exam_data.subject_exam %}
+    General Assessment for {{exam_data.subject_exam.name}}
+  {% elif exam_data.topic_exam %}
+    General Assessment for {{exam_data.topic_exam.name}}
+  {% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item" aria-current="page"><a href="{% url 'user:landing' %}">Home</a></li>
+  <li class="breadcrumb-item" aria-current="page"><a href="{% url 'taken:index' %}">Exam Results</a></li>
+
+  <li class="breadcrumb-item active" aria-current="page">
+    {% if exam_data.original_exam %}
+      {{exam_data.original_exam.name}}
+    {% elif exam_data.course_exam %}
+      General Assessment for {{exam_data.course_exam.name}}
+    {% elif exam_data.subject_exam %}
+      General Assessment for {{exam_data.subject_exam.name}}
+    {% elif exam_data.topic_exam %}
+      General Assessment for {{exam_data.topic_exam.name}}
+    {% endif %}
+  </li>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-lg-2">
+      {% include "student/sidenavs/navigation.html" %}
+      <div class="card mt-2 rounded-0">
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            <a href="{% url 'user:landing' %}" class="list-group-item text-dark">Dashboard</a>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-10">
+      
+      <div class="card rounded-0 shadow">
+        <div class="card-header lead text-center bg-white">Review Exam Result</div>
+        <div class="card-body">
+          {% if exam_data.original_exam %}
+          <div>
+            Course: 
+            <a href="{% url 'acad:course' exam_data.original_exam.topic.subject.course.id %}">
+            {{exam_data.original_exam.topic.subject.course.name}}
+            </a>
+          </div>
+          <div>
+            Subject: 
+            <a href="{% url 'acad:subject' exam_data.original_exam.topic.subject.id %}">
+            {{exam_data.original_exam.topic.subject.name}}
+            </a>
+          </div>
+          <div>
+            From Topic: 
+            <a href="{% url 'acad:topic' exam_data.original_exam.topic.id %}">
+            {{exam_data.original_exam.topic.name}}
+            </a>
+          </div>
+          {% elif exam_data.course_exam %}
+            <div>
+              Course: 
+              <a href="{% url 'acad:course' exam_data.course_exam.pk %}">
+              {{exam_data.course_exam.name}}
+              </a>
+            </div>
+          {% elif exam_data.subject_exam %}
+            <div>
+              Course: 
+              <a href="{% url 'acad:course' exam_data.subject_exam.course.pk %}">
+              {{exam_data.subject_exam.course.name}}
+              </a>
+            </div>
+            <div>
+                Subject: 
+              <a href="{% url 'acad:subject' exam_data.subject_exam.pk %}">
+              {{exam_data.subject_exam.name}}
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="card rounded-0 shadow mt-4 border-0">
+        <div class="card-body table-responsive p-0">
+          <table class="table table-hover p-0 m-0">
+            <tr>
+              <th>Question</th>
+              <th>My Answer/s</th>
+              <th>Result</th>
+              <th>Points</th>
+            </tr>
+            {% for question in exam_data.attemptquestion_set.all %}
+              {% for answer in question.attemptanswer_set.all %}
+                <tr>
+                {% if forloop.first %}
+                  <td rowspan="{{question.attemptanswer_set.count}}">{{question.original_question.question}}</td>
+                {% endif %}
+
+                <td>{{answer.original_answer}}</td>
+                <td>{{answer.is_correct | safe}}</td>
+
+                {% if forloop.first %}
+                  <td rowspan="{{question.attemptanswer_set.count}}">{{question.points}}</td>
+                {% endif %}
+                </tr>
+              {% endfor %}
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>  
+</div>
+
+{% endblock %}
+
+{% block bottom_post_dependency %}
+<script src="{%static "js/countdown.js"%}"></script>
+<script>var subscriptions = {{subscription_json|safe}};</script>
+<script src="{%static "js/main.js"%}"></script>
+{% endblock %}

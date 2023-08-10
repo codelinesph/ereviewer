@@ -1,0 +1,29 @@
+{% for subscription in subscriptions %}
+<div class="card rounded-0 mt-2 shadow">
+  <div 
+    class="card-header bg-white d-flex justify-content-between p-1" 
+  >
+  <div>
+    {{subscription.course}}
+  </div>
+  <div>
+    <span class="badge badge-pill badge-success d-none" id="sub-{{subscription.id}}-active">Active</span>
+    <span class="badge badge-pill badge-danger d-none" id="sub-{{subscription.id}}-expired">Expired</span>
+    <span class="badge badge-pill badge-warning d-none" id="sub-{{subscription.id}}-almostexp">To Be Expired</span>
+  </div>
+</div>
+  <div class="card-body p-1" style="font-size: 14px">
+    <div><strong>Started:</strong></div>
+    <div class="mb-2" id="started-{{subscription.id}}">-</div>
+
+    <div><strong>Valid Until:</strong></div>
+    <div class="mb-2" id="validity-{{subscription.id}}">-</div>
+
+    <div><strong>Duration:</strong></div>
+    <div class="mb-2" id="duration-{{subscription.id}}">-</div>
+
+    <div><strong>Remaining:</strong></div>
+    <div class="mb-2" id="remaining-{{subscription.id}}">-</div>
+  </div>
+</div>
+{% endfor %}

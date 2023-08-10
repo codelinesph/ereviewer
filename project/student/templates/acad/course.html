@@ -1,0 +1,100 @@
+{% extends "student/base.html" %}
+{% load static %}
+{% block title %}TakenExams - {{info.course.name}}{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/u/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{info.course.name}}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-3 mb-3">
+      {% include "student/sidenavs/navigation.html" %}
+    </div>
+    <div class="col-lg-9">
+
+      {% if info.course.banner %}
+        <div class="card rounded-0 border-0 shadow">
+          <div class="card-body p-0">
+            <img src="{% static '/img/content/' %}{{info.course.banner}}" alt="" class="img-responsive w-100">
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="card rounded-0 mt-3 shadow">
+        <div class="card-header text-center bg-white display-4 font-weight-bold">
+          {{info.course.name}}
+        </div>
+        <div class="card-body">
+          <div>
+            {{info.course.description | safe}}
+          </div>
+          {% if info.course.content %}
+            <hr><div>
+              {{info.course.content | safe}}
+            </div>
+          {% endif %}
+        </div>
+        <div class="card-footer p-1">
+          {% if user.is_staff %}
+            <a href="{% url 'admin:content_course_change' info.id %}" class="btn btn-success rounded-0" target="_blank">Edit Course Info</a>
+            <a href="{% url 'admin:content_subject_add'%}?course={{info.course.id}}" class="btn btn-primary rounded-0" target="_blank">Add New Subject</a>
+            {% endif %}
+        </div>
+      </div>
+
+      {% if info.premium_member == False %}
+      <div class="alert alert-info rounded-0 mt-2 shadow">
+        <i class="far fa-lightbulb"></i> Tip: Loving this app?, visit our nearest branch now so we can unlock more content for you.
+      </div>
+      {% endif %}
+
+      <!-- MAIN CONTENTS -->
+      
+      <div class="mt-3">
+        {% for subject in info.course.subject_set.all %}
+        <div class="card rounded-0 mt-2 shadow">
+          <div class="card-header bg-white font-weight-bold"><a href="{% url 'acad:subject' subject.id %}">{{subject.name}}</a></div>
+          <div class="card-body row">
+            {% if subject.logo %}
+              <div class="col-lg-2 col-xs-12">
+                <img src="{% static '/img/content/' %}{{subject.logo}}" alt="" class="img-responsive w-100">
+              </div>
+              <div class="col-lg-10 col-xs-12">
+                {{subject.description | safe}}
+              </div>
+            {% else %}
+              <div>
+                {{subject.description | safe}}
+              </div>
+            {% endif %}
+            
+          </div>
+          
+          <div class="card-footer bg-white p-1 d-flex justify-content-between">
+            <div>
+              {% if user.is_staff %}
+                <a href="{% url 'admin:content_subject_change' subject.id %}" class="btn btn-success rounded-0" target="_blank">Edit This Subject</a>
+              {% endif %}
+              <a href="{% url 'acad:subject' subject.id %}" class="btn btn-primary rounded-0">View Content <i class="fas fa-chevron-right"></i></a>
+            </div>
+          </div>
+          
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block bottom_pre_dependency %}
+<script>var subscriptions = {};</script>
+{% endblock %}
+
+{% block bottom_post_dependency %}
+<script>var subscriptions = [];</script>
+{% endblock %}

@@ -1,0 +1,23 @@
+<html>
+<head>
+  <title> Email Activation </title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container-fluid">
+    <p class="lead"> 
+      <strong>Welcome! {{ user }}</strong>
+    </p>
+    <p>
+      Your account has successfully created. Please click below link to activate your account.
+    </p>
+    <div class="text-center">
+      <a href="{{ activate_url }}" class="btn btn-success btn-lg rounded-0">Click Here to Activate your account </a>
+    </div>
+    <div class="text-right mt-4">
+      Regards,<br>
+      <strong>The Codelines Team.</strong>
+    </div>
+  </div>
+</body>
+</html>

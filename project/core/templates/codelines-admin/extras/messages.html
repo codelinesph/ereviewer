@@ -1,0 +1,29 @@
+{% load i18n %}
+
+{% if messages %}
+{% for message in messages %}
+    {% if message.tags == 'debug' %}
+        <div class="alert alert-dark" role="alert">{{ message|capfirst }}</div>
+    {% elif message.tags == 'info' %}
+        <div class="alert alert-info" role="alert">{{ message|capfirst }}</div>
+    {% elif message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|capfirst }}</div>
+    {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning" role="alert">{{ message|capfirst }}</div>
+    {% elif message.tags == 'error' %}
+        <div class="alert alert-danger" role="alert">{{ message|capfirst }}</div>
+    {% else %}
+        <div class="alert alert-light" role="alert">{{ message|capfirst }}</div>
+    {% endif %}
+    
+{% endfor %}
+{% endif %}
+
+{% if errors %}
+    <div class="alert alert-danger">
+        {% if errors|length == 1 %}{% trans "Please correct the error below." %}{% else %}{% trans "Please correct the errors below." %}{% endif %}
+    </div>
+    <div class="alert alert-danger">
+        {{ adminform.form.non_field_errors }}
+    </div>
+{% endif %}
